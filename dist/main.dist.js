@@ -557,25 +557,22 @@ var openFiles = new _OpenFile2['default'](),
     gapWidth = (width - bladeWidthMM / 10 * numBlades) / (numBlades - 1),
     log = new _Logging2['default'](jobNumber, _config2['default'].name, _config2['default'].adobeVersion, _config2['default'].mac.name, _config2['default'].mac.version),
     magenta = new _Color2['default']().solidColor(0, 100, 0, 0);
-alert(bladeWidthMM);
 
-// TODO Add guides to where the panels start and end.
-function cutBlades() {
-    for (var i = 0; i < numBlades; i++) {
+function cutBlades(width, height, gap, num) {
+    for (var i = 0; i < num; i++) {
         var xPositionOffset = void 0;
         if (i == 0) {
             xPositionOffset = 0;
         } else {
-            xPositionOffset = gapWidth;
+            xPositionOffset = gap;
         }
-        var selectedRegion = new _Selection2['default']().selection(i * (bladeWidthMM / 10 + xPositionOffset), 0, bladeWidthMM / 10, height);
+        var selectedRegion = new _Selection2['default']().selection(i * (width / 10 + xPositionOffset), 0, width / 10, height);
         app.activeDocument.selection.select(selectedRegion);
         app.activeDocument.selection.fill(magenta);
     }
 }
 
-cutBlades();
-// TODO Select each panel and fill it with magenta.
+cutBlades(bladeWidthMM, height, gapWidth, numBlades);
 // TODO Receive input from user.
 
 },{"../config":1,"./Color":2,"./Logging":3,"./OpenFile":4,"./SaveFile":5,"./Selection":6}]},{},[7]);

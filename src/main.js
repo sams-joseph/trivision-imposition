@@ -26,21 +26,25 @@ let openFiles = new OpenFile(),
     ),
     magenta = new Color().solidColor(0, 100, 0, 0);
 
-// TODO Add guides to where the panels start and end.
-// TODO Select each panel and fill it with magenta.
-function cutBlades() {
-    for(let i = 0; i < numBlades; i++) {
+
+function cutBlades(width, height, gap, num) {
+    for(let i = 0; i < num; i++) {
         let xPositionOffset;
         if(i == 0) {
             xPositionOffset = 0;
         }else {
-            xPositionOffset = gapWidth;
+            xPositionOffset = gap;
         }
-        let selectedRegion = new Selection().selection(i * ((bladeWidthMM / 10) + xPositionOffset), 0, bladeWidthMM / 10, height);
+        let selectedRegion = new Selection().selection(
+            i * ((width / 10) + xPositionOffset),
+            0,
+            width / 10,
+            height
+        );
         app.activeDocument.selection.select(selectedRegion);
         app.activeDocument.selection.fill(magenta);
     }
 }
 
-cutBlades();
+cutBlades(bladeWidthMM, height, gapWidth, numBlades);
 // TODO Receive input from user.
