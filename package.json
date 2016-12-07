@@ -1,0 +1,15 @@
+{
+  "name": "ES6-Extendscript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "build": "extendscriptr --script src/main.js --output dist/main.dist.js"
+  },
+  "keywords": [],
+  "author": "Joseph Sams",
+  "license": "ISC",
+  "devDependencies": {
+    "extendscriptr": "^0.1.0"
+  }
+}
