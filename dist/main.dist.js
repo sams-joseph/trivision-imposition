@@ -337,7 +337,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Logging = function () {
-  function Logging(jobNumber, operator, adobeVersion, macName, macVersion, error) {
+  function Logging(jobNumber, operator, adobeVersion, macName, macVersion) {
     _classCallCheck(this, Logging);
 
     this.jobNumber = jobNumber;
@@ -345,12 +345,11 @@ var Logging = function () {
     this.adobeVersion = adobeVersion;
     this.macName = macName;
     this.macVersion = macVersion;
-    this.error = error;
   }
 
   _createClass(Logging, [{
     key: "logger",
-    value: function logger() {
+    value: function logger(error) {
       var currentdate = new Date();
       var datetime = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + " @ " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
 
@@ -367,14 +366,14 @@ var Logging = function () {
           write_file.lineFeed = "Macintosh";
         }
         if (out !== false) {
-          write_file.writeln(this.operator + " worked " + this.jobNumber + " at " + datetime + "\n\nSystem Specs - Adobe Version: " + this.adobeVersion + " | Mac Name: " + this.macName + " | Mac Version: " + this.macVersion + "\n\nAny Errors: " + this.error + "\n" + bar + "\n");
+          write_file.writeln(this.operator + " worked " + this.jobNumber + " at " + datetime + "\n\nSystem Specs - Adobe Version: " + this.adobeVersion + " | Mac Name: " + this.macName + " | Mac Version: " + this.macVersion + "\n\nAny Errors: " + error + "\n" + bar + "\n");
           write_file.close();
         }
       } else {
         var append_file = File(filepath);
         append_file.open('a', undefined, undefined);
         if (append_file !== '') {
-          append_file.writeln(this.operator + " worked " + this.jobNumber + " at " + datetime + "\n\nSystem Specs - Adobe Version: " + this.adobeVersion + " | Mac Name: " + this.macName + " | Mac Version: " + this.macVersion + "\n\nAny Errors: " + this.error + "\n" + bar + "\n");
+          append_file.writeln(this.operator + " worked " + this.jobNumber + " at " + datetime + "\n\nSystem Specs - Adobe Version: " + this.adobeVersion + " | Mac Name: " + this.macName + " | Mac Version: " + this.macVersion + "\n\nAny Errors: " + error + "\n" + bar + "\n");
 
           append_file.close();
         }
@@ -494,12 +493,12 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Selections = function () {
-    function Selections() {
-        _classCallCheck(this, Selections);
+var Selection = function () {
+    function Selection() {
+        _classCallCheck(this, Selection);
     }
 
-    _createClass(Selections, [{
+    _createClass(Selection, [{
         key: "selection",
         value: function selection(x, y, width, height) {
             selectedRegion = Array(Array(x, y), Array(x + width, y), Array(x + width, y + height), Array(x, y + height));
@@ -508,10 +507,14 @@ var Selections = function () {
         }
     }]);
 
-    return Selections;
+    return Selection;
 }();
 
-exports["default"] = Selections;
+exports["default"] = Selection;
+
+/*
+NOTE To use: document.selection.select(SELECTION)
+*/
 
 },{}],7:[function(require,module,exports){
 'use strict';
@@ -545,16 +548,34 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 var openFiles = new _OpenFile2['default'](),
     jobNumber = '123456P01',
     bladeWidth = 95,
-    numBlades = 95,
+    numBlades = 138,
     fileDims = openFiles.open('G33STORE-1/WIP/' + jobNumber + '/prep_art/' + jobNumber + '.tif'),
-    color = new _Color2['default'](),
     height = fileDims[0],
     width = fileDims[1],
     res = fileDims[2],
-    gapWidth = (bladeWidth / 10 * res * numBlades - width) / (numBlades - 1),
-    log = new _Logging2['default'](jobNumber, _config2['default'].name, _config2['default'].adobeVersion, _config2['default'].mac.name, _config2['default'].mac.version, '');
+    bladeWidthMM = bladeWidth / 25.4 * res,
+    gapWidth = (width - bladeWidthMM / 10 * numBlades) / (numBlades - 1),
+    log = new _Logging2['default'](jobNumber, _config2['default'].name, _config2['default'].adobeVersion, _config2['default'].mac.name, _config2['default'].mac.version),
+    magenta = new _Color2['default']().solidColor(0, 100, 0, 0);
+alert(bladeWidthMM);
 
-color.solidColor(100, 0, 0, 0);
-log.logger();
+// TODO Add guides to where the panels start and end.
+function cutBlades() {
+    for (var i = 0; i < numBlades; i++) {
+        var xPositionOffset = void 0;
+        if (i == 0) {
+            xPositionOffset = 0;
+        } else {
+            xPositionOffset = gapWidth;
+        }
+        var selectedRegion = new _Selection2['default']().selection(i * (bladeWidthMM / 10 + xPositionOffset), 0, bladeWidthMM / 10, height);
+        app.activeDocument.selection.select(selectedRegion);
+        app.activeDocument.selection.fill(magenta);
+    }
+}
+
+cutBlades();
+// TODO Select each panel and fill it with magenta.
+// TODO Receive input from user.
 
 },{"../config":1,"./Color":2,"./Logging":3,"./OpenFile":4,"./SaveFile":5,"./Selection":6}]},{},[7]);

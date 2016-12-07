@@ -1,14 +1,13 @@
 class Logging {
-    constructor(jobNumber, operator, adobeVersion, macName, macVersion, error) {
+    constructor(jobNumber, operator, adobeVersion, macName, macVersion) {
         this.jobNumber = jobNumber;
         this.operator = operator;
         this.adobeVersion = adobeVersion;
         this.macName = macName;
         this.macVersion = macVersion;
-        this.error = error;
     }
 
-    logger() {
+    logger(error) {
         let currentdate = new Date();
         let datetime = currentdate.getDate() + "/"
                         + (currentdate.getMonth()+1)  + "/"
@@ -33,7 +32,7 @@ class Logging {
                 write_file.writeln(
 `${this.operator} worked ${this.jobNumber} at ${datetime}\n
 System Specs - Adobe Version: ${this.adobeVersion} | Mac Name: ${this.macName} | Mac Version: ${this.macVersion}\n
-Any Errors: ${this.error}\n${bar}\n`
+Any Errors: ${error}\n${bar}\n`
                 );
                 write_file.close();
               }
@@ -44,7 +43,7 @@ Any Errors: ${this.error}\n${bar}\n`
                 append_file.writeln(
 `${this.operator} worked ${this.jobNumber} at ${datetime}\n
 System Specs - Adobe Version: ${this.adobeVersion} | Mac Name: ${this.macName} | Mac Version: ${this.macVersion}\n
-Any Errors: ${this.error}\n${bar}\n`
+Any Errors: ${error}\n${bar}\n`
                 );
 
               append_file.close();

@@ -1,4 +1,4 @@
-class Selections {
+class Selection {
     selection(x, y, width, height) {
         selectedRegion = Array(Array(x,y),
                          Array(x+width, y),
@@ -9,4 +9,8 @@ class Selections {
     }
 }
 
-export default Selections;
+export default Selection;
+
+/*
+NOTE To use: document.selection.select(SELECTION)
+*/
